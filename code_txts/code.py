@@ -37,13 +37,13 @@ def main():
                             #se estava em múltiplas linhas
                             if current_question:
                                 current_question.append(line[:question_end.start()].strip())
-                                questions.append(''.join(current_question).strip())
+                                questions.append(' '.join(current_question).strip())
                                 current_question = []
                             #se estava na mesma linha
                             else:
-                                questions.append(line[question_start:question_end.start()].strip())
+                                questions.append(line[question_start + line_left:question_end.start() + line_left].strip())
                             #resseta o começa da pergunta e procura no resto da linha
-                            line_left = question_end.end()
+                            line_left += question_end.end()
                             question_start = 0
                             
                         #Se não achou o fim da pergunta -> tá em outra linha
@@ -54,7 +54,7 @@ def main():
                     else:
                         break
 
-
+            print(questions)
 
     except FileNotFoundError:
         print('File no found.') #a entrada do programa vai ser por argumentos. 2, arv template e o nome do arquivo feedback
@@ -63,7 +63,7 @@ def main():
 
 #função que acha perguntas
 def find_question(line, find):
-    pattern = r'^-*>' if find == '>' else r'(?P<parameters>\{\d?[sn]?\})?;$'
+    pattern = r'-*>' if find == '>' else r'(?P<parameters>\{\d?[sn]?\})?;'
     data = 0
 
     if find == '>':
