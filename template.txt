@@ -1,0 +1,11 @@
+->pergunta1;>pergunta2   ;    -------> pergunta3;
+->pergunta 4
+     que termina na proxima linha;
+amor não tem coisa boa
+melhor do que amar não e?
+---> pergunta 5;
+>; >você gosta de brincar? >se sim, dana-se;
+>lorem ipsum
+amor de 
+bla bla aaaa
+,,,,,,,,,,,,;
