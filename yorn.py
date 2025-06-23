@@ -1,37 +1,30 @@
 import re
 from sys import argv, exit
 from os import path
+from questions import Question
 
 
 def main():
-    first_checks()
+    # first_checks()
 
     with open('template.txt') as file:
-        questions = get_questions(''.join(file.readlines()))
-        print(questions)
+        data = Question.get_questions_list(''.join(file.readlines()))
+        questions = []
 
+        global_coment = False
 
+        for question in data:
+            if question.lower() in ['c/on','c/off']:
+                global_coment = True if question.lower() == 'c/on' else False
+            else:
+                new_question = Question('',False)
+                try:
+                    new_question.get_question(question, global_coment)
+                    questions.append(new_question)
+                except ValueError:
+                    continue
 
-
-
-
-#Retorna as perguntas formatadas corretamente
-def get_questions(lines):
-    data = re.findall(r'-*>([^;]*);', lines)
-
-    formated_questions = []
-    pattern = r'(?P<phrase>[^{}]*)(?:\{(?P<points>\d)?,?(?P<C>[ysn])?\})?'
-
-    for question in data: 
-        phrase, points, coment = re.search(pattern, question, re.IGNORECASE).group('phrase','points','C')
-
-        if phrase:
-            points = int(points) if points else 1
-            if not coment: coment = 'n'
-            phrase = re.sub(r'\s+', ' ', phrase)
-            formated_questions.append((phrase,points,coment))
-
-    return formated_questions
+        for question in questions: print(question)
 
 
 #Checa os argumentos dado ao programa e se o arquivo "resposta.txt" já existe
@@ -49,9 +42,6 @@ def first_checks():
                 match response:
                     case 'y'|'s': return 0
                     case 'n': exit(0)
-
-
-
 
 
 if __name__ == '__main__':
