@@ -3,35 +3,26 @@ import re
 
 def main():
     with open('template.txt') as file:
-        data = get_questions(''.join(file.readlines()))
-        print('-=-'*20)
-        print(data)
-
-        print('---'*20)
-        cleaned_questions = []
-        for question in data:
-            if current_question := format_questions(question):
-                cleaned_questions.append(current_question) 
-        print(cleaned_questions)
-        print('-=-'*20)
+        questions = get_questions(''.join(file.readlines()))
+        print(questions)
 
 
 def get_questions(lines):
-    pattern = r'-*>([^;]*);'
-    return re.findall(pattern, lines)
+    data = re.findall(r'-*>([^;]*);', lines)
 
-
-def format_questions(question):
+    formated_questions = []
     pattern = r'(?P<phrase>[^{}]*)(?:\{(?P<points>\d)?,?(?P<C>[ysn])?\})?'
-    phrase, points, coment = re.search(pattern, question, re.IGNORECASE).group('phrase','points','C')
 
-    if not phrase: return None
-    points = int(points) if points else 1
-    if not coment: coment = 'n'
+    for question in data: 
+        phrase, points, coment = re.search(pattern, question, re.IGNORECASE).group('phrase','points','C')
 
-    phrase = re.sub('\s+', ' ', phrase)
+        if phrase:
+            points = int(points) if points else 1
+            if not coment: coment = 'n'
+            phrase = re.sub('\s+', ' ', phrase)
+            formated_questions.append((phrase,points,coment))
 
-    return (phrase,points,coment)
+    return formated_questions
 
 
 if __name__ == '__main__':
