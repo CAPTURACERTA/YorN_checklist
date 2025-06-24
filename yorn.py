@@ -1,4 +1,3 @@
-import re
 from sys import argv, exit
 from os import path
 from questions import Question
@@ -7,24 +6,17 @@ from questions import Question
 def main():
     # first_checks()
 
-    with open('template.txt') as file:
-        data = Question.get_questions_list(''.join(file.readlines()))
-        questions = []
+    try:
+        with open('template.txt', encoding='utf-8') as file:
+            questions = Question.get_questions(''.join(file.readlines()))
+    except FileNotFoundError:
+        print('Erro: arquivo não encontrado.')
+        exit(1)
+    except Exception as e:
+        print(f'Erro inesperado {e}')
+        exit(1)
 
-        global_coment = False
-
-        for question in data:
-            if question.lower() in ['c/on','c/off']:
-                global_coment = True if question.lower() == 'c/on' else False
-            else:
-                new_question = Question('',False)
-                try:
-                    new_question.get_question(question, global_coment)
-                    questions.append(new_question)
-                except ValueError:
-                    continue
-
-        for question in questions: print(question)
+    for question in questions: print(question)
 
 
 #Checa os argumentos dado ao programa e se o arquivo "resposta.txt" já existe

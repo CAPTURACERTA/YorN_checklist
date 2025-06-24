@@ -15,17 +15,24 @@ class Question:
     
 
     @classmethod
-    def get_questions_list(cls, lines):
-        data = []
+    def get_questions(cls, lines):
+        questions = []
+        global_coment = False
 
         for match in re.finditer(r'-*>(?P<question>[^;]*);|(?P<comand>c\/o(?:n|ff))', lines):
-            if question := match.group('question'): data.append(question)
-            elif comand := match.group('comand'): data.append(comand)
-        
-        return data
+            if question := match.group('question'): 
+                try:
+                    new_question = cls('', False)
+                    new_question.create_question(question, global_coment)
+                    questions.append(new_question)
+                except ValueError: continue
+            elif comand := match.group('comand'): 
+                global_coment = True if comand.lower() == 'c/on' else False
+                 
+        return questions
 
 
-    def get_question(self, question, global_coment):
+    def create_question(self, question, global_coment):
         pattern = r'(?P<phrase>[^{}]*)(?:\{(?P<points>\d)?,?(?P<C>[ysn])?\})?'
         text, points, coment = re.search(pattern, question, re.IGNORECASE).group('phrase','points','C')
 
