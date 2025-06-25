@@ -2,7 +2,7 @@ import re
 
 
 class Question:
-    def __init__(self, text, coment, points=1):
+    def __init__(self, text, points, coment):
         self.text = text
         self.points = int(points)
         self.coment = coment
@@ -11,7 +11,7 @@ class Question:
     
 
     def __str__(self):
-        return f'texto: "{self.text}", pontos: "{self.points}", comentario: "{self.coment}"'
+        return f'texto: "{self.text}", pontos: "{self.points}", comentario?: "{self.coment}", resposta: "{self.user_answer}", comentario: "{self.user_coment}"'
     
 
     @classmethod
@@ -22,8 +22,7 @@ class Question:
         for match in re.finditer(r'-*>(?P<question>[^;]*);|(?P<comand>c\/o(?:n|ff))', lines):
             if question := match.group('question'): 
                 try:
-                    new_question = cls('', False)
-                    new_question.create_question(question, global_coment)
+                    new_question = cls.create_question(question,global_coment)
                     questions.append(new_question)
                 except ValueError: continue
             elif comand := match.group('comand'): 
@@ -32,16 +31,24 @@ class Question:
         return questions
 
 
-    def create_question(self, question, global_coment):
+    @classmethod
+    def create_question(cls, question, global_coment):
         pattern = r'(?P<phrase>[^{}]*)(?:\{(?P<points>\d)?,?(?P<C>[ysn])?\})?'
         text, points, coment = re.search(pattern, question, re.IGNORECASE).group('phrase','points','C')
 
         if not text: raise ValueError('Not a question')
         text = re.sub(r'\s+', ' ', text).strip()
-        self.text = text
 
-        if points: self.points = points
+        if not points: points = 1
 
-        if coment: self.coment = True if coment.lower() in 'ys' else False
-        else: self.coment = global_coment
+        if coment: coment = True if coment.lower() in 'ys' else False
+        else: coment = global_coment
         
+        return cls(text, points, coment)
+    
+
+    def answer_question(self, answer):
+        self.user_answer = answer
+
+        if self.coment: self.user_coment = input('Coment: ').strip()
+            
