@@ -1,7 +1,2 @@
-> pergunta 1/n;
-> pergunta 2/s{2s};
-c/on
->1/s;>5/s{5};>1/n{n};
-c/off
->última pergunta
-longa para testar;
+> -3 pontos {-3};
+> 3 pontos {3};

@@ -33,7 +33,7 @@ class Question:
 
     @classmethod
     def create_question(cls, question, global_coment):
-        pattern = r'(?P<phrase>[^{}]*)(?:\{(?P<points>\d)?,?(?P<C>[ysn])?\})?'
+        pattern = r'(?P<phrase>[^{}]*)(?:\{(?P<points>-?\d)?,?(?P<C>[ysn])?\})?'
         text, points, coment = re.search(pattern, question, re.IGNORECASE).group('phrase','points','C')
 
         if not text: raise ValueError('Not a question')
@@ -49,6 +49,5 @@ class Question:
 
     def answer_question(self, answer):
         self.user_answer = answer
-
         if self.coment: self.user_coment = input('Coment: ').strip()
             
