@@ -1,6 +1,6 @@
 from sys import argv, exit
 from os import path
-from re import match
+from re import match, IGNORECASE
 from yorn_library import yorn
 
 
@@ -10,7 +10,7 @@ def main():
     try:
         with open('template.txt', encoding='utf-8') as file:
             lines = ''.join(file.readlines())
-            mode = match(r'mode: (?P<mode>yorn|regular|toanswer|tofeedback)', lines)
+            mode = match(r'mode: *(?P<mode>yorn|regular|toanswer|tofeedback)', lines, IGNORECASE)
             if mode: mode = mode.group('mode')
             else: mode = 'yorn'
     except FileNotFoundError:
@@ -21,9 +21,14 @@ def main():
         exit(1)
 
     match mode:
+        case 'tofeedback':
+            questions, feedback = yorn.get_tofeedback(lines)
         case _: 
             questions, feedback = yorn.get_yorn(lines)
-            for q in questions: print(q)
+    
+    for q in questions: print(q)
+    print(feedback)
+
 
 #Checa os argumentos dado ao programa e se o arquivo "resposta.txt" já existe
 def first_checks():

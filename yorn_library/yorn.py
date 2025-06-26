@@ -1,28 +1,22 @@
-from .questions import Question
+from .questions import Question, validate_answer
 from re import findall, IGNORECASE
     
 
 def get_yorn(lines):
-    return get_answers(Question.get_questions(lines),get_feedback_percentage(lines))
+    return get_yorn_answers(Question.get_questions(lines),inicialize_feedback(lines))
     
 
-def get_feedback_percentage(lines):
-    pattern = r'feedback: *(\d\d?\d?)'
-    data = findall(pattern, lines, IGNORECASE)
-    return {'percentage':int(data[0])} if data and 0 <= int(data[0]) <= 100 else {'percentage':60}
-    
+def get_tofeedback(lines):
+    return get_tofeedback_answers(Question.get_questions(lines),inicialize_feedback(lines))
 
-#ANSWERING QUESTIONS ↓
-def get_answers(questions, feedback):
+#ANSWERING YORN QUESTIONS ↓
+def get_yorn_answers(questions, feedback):
     current_question = 0
-
-    feedback['total_points'] = feedback.get('total_points', 0)
-    feedback['user_points'] = feedback.get('user_points', 0)
 
     while current_question < len(questions):
         print(f'->{questions[current_question].text} (y/n)')
         while True:
-            answer = validate_answer(current_question)
+            answer = validate_answer(current_question=current_question)
             if answer != -1: break
         
         if answer == '/back': current_question -= 1
@@ -31,26 +25,29 @@ def get_answers(questions, feedback):
             feedback = update_points(questions[current_question], feedback)
             current_question += 1
 
-    if feedback['user_points'] >= round((feedback['percentage'] * feedback['total_points']) / 100):
-        feedback['result'] = 'SUCCESS'
-    else:
-        feedback['result'] = 'FAILURE' 
+    feedback['result'] = update_result(feedback)
 
     return questions, feedback
+#ANSWERING YORN QUESTIONS ↑
 
 
-def validate_answer(current_question):
-    answer = input().strip().lower()
-    match answer:
-        case 'y'|'s': return True
-        case 'n': return False
-        case '/': return '/'
-        case '/back': 
-            if current_question > 0: return '/back'
-            else: 
-                print('--No questions to go back.')
-                return -1
-        case _: return -1
+#GETTING TOFEEDBACK QUESTIONS ↓
+def get_tofeedback_answers(questions, feedback):
+    for question in questions:
+        feedback = update_points(question, feedback)
+
+    feedback['result'] = update_result(feedback)
+
+    return questions, feedback
+#GETTING TOFEEDBACK QUESTIONS ↑
+
+
+#FEEDBACK FUNCTIONS ↓
+def inicialize_feedback(lines):
+    pattern = r'feedback: *(\d\d?\d?)'
+    data = findall(pattern, lines, IGNORECASE)
+    data = int(data) if data and 0 <= int(data[0]) <= 100 else 60
+    return {'percentage':data,'total_points':0,'user_points':0,'result':None}
 
 
 def update_points(question, feedback):
@@ -60,5 +57,13 @@ def update_points(question, feedback):
         feedback['user_points'] = feedback.get('user_points', 0) + question.points 
     
     return feedback
-#ANSWERING QUESTIONS ↑
 
+
+def update_result(feedback):
+    result = ''
+    if feedback['user_points'] >= round((feedback['percentage'] * feedback['total_points']) / 100):
+         result = 'SUCCESS'
+    else:
+        result = 'FAILURE' 
+    return result
+#FEEDBACK FUNCTIONS ↑
