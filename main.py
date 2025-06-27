@@ -1,34 +1,43 @@
 from sys import argv, exit
 from os import path
-from re import match, IGNORECASE
+from re import search, IGNORECASE
 from yorn_library import yorn
 
 
 def main():
-    # first_checks()
+    first_checks()
 
     try:
-        with open('template.txt', encoding='utf-8') as file:
+        with open(argv[1], encoding='utf-8') as file:
             lines = ''.join(file.readlines())
-            mode = match(r'mode: *(?P<mode>yorn|regular|toanswer|tofeedback)', lines, IGNORECASE)
-            if mode: mode = mode.group('mode')
+            if mode := search(r'mode: *(?P<mode>yorn|toanswer|tofeedback)', lines, IGNORECASE):
+                mode = mode.group('mode').lower()
             else: mode = 'yorn'
     except FileNotFoundError:
-        print('Erro: arquivo não encontrado.')
+        print('--Error: questions file not found.')
         exit(1)
     except Exception as e:
-        print(f'Erro inesperado {e}')
+        print(f'--Unexpected error: {e}')
         exit(1)
 
+    questions = []
+    feedback = {}
+
     match mode:
+        case 'yorn': 
+            questions, feedback = yorn.get_yorn(lines)
         case 'tofeedback':
             questions, feedback = yorn.get_tofeedback(lines)
-        case _: 
-            questions, feedback = yorn.get_yorn(lines)
+        case 'toanswer':
+            questions = yorn.get_toanswer(lines)       
     
-    for q in questions: print(q)
-    print(feedback)
-
+    try:
+        with open(argv[2], 'w', encoding='utf-8') as file:
+            yorn.draw_result(file, mode, questions, feedback)
+    except Exception as e:
+        print(f'--Unexpected error: {e}')
+        exit(1)
+        
 
 #Checa os argumentos dado ao programa e se o arquivo "resposta.txt" já existe
 def first_checks():

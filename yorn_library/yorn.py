@@ -9,7 +9,12 @@ def get_yorn(lines):
 def get_tofeedback(lines):
     return get_tofeedback_answers(Question.get_questions(lines),inicialize_feedback(lines))
 
-#ANSWERING YORN QUESTIONS ↓
+
+def get_toanswer(lines):
+    return Question.get_questions(lines)
+
+
+#ANSWERING (YORN) QUESTIONS ↓
 def get_yorn_answers(questions, feedback):
     current_question = 0
 
@@ -28,10 +33,10 @@ def get_yorn_answers(questions, feedback):
     feedback['result'] = update_result(feedback)
 
     return questions, feedback
-#ANSWERING YORN QUESTIONS ↑
+#ANSWERING (YORN) QUESTIONS ↑
 
 
-#GETTING TOFEEDBACK QUESTIONS ↓
+#GETTING (TOFEEDBACK) QUESTIONS ↓
 def get_tofeedback_answers(questions, feedback):
     for question in questions:
         feedback = update_points(question, feedback)
@@ -39,14 +44,14 @@ def get_tofeedback_answers(questions, feedback):
     feedback['result'] = update_result(feedback)
 
     return questions, feedback
-#GETTING TOFEEDBACK QUESTIONS ↑
+#GETTING (TOFEEDBACK) QUESTIONS ↑
 
 
 #FEEDBACK FUNCTIONS ↓
 def inicialize_feedback(lines):
     pattern = r'feedback: *(\d\d?\d?)'
     data = findall(pattern, lines, IGNORECASE)
-    data = int(data) if data and 0 <= int(data[0]) <= 100 else 60
+    data = int(data[0]) if data and 0 <= int(data[0]) <= 100 else 60
     return {'percentage':data,'total_points':0,'user_points':0,'result':None}
 
 
@@ -67,3 +72,49 @@ def update_result(feedback):
         result = 'FAILURE' 
     return result
 #FEEDBACK FUNCTIONS ↑
+
+
+# OUTPUT ↓
+def draw_result(file, mode, questions, feedback):
+    match mode:
+        case 'toanswer':
+            header = f'{'toanswer'.center(120,'-')}\nmode: yorn\nfeedback: 60\n\n{'questions'.center(120,'-')}'
+            file.write(header)
+
+            if not questions:
+                string = '\n>{1,n};(a: c:);'
+                file.write(string)
+            else:
+                for question in questions:
+                    if question.coment:
+                        string = '\n>'+question.text+'{'+str(question.points)+','+'y'+'};(a:/ c:/);'
+                    else:
+                        string = '\n>'+question.text+'{'+str(question.points)+'};(a:/ c:/);'
+                    file.write(string)
+    
+        case _:
+            questions = sorted(questions, key=lambda q: q.points, reverse=True)
+
+            header = f'{feedback['result'].center(120,'-')}\npercentage: {feedback['percentage']}\ntotal points: {feedback['total_points']}\nuser points: {feedback['user_points']}\n\n'
+            file.write(header)
+
+            #yes
+            file.write('"yes" questions'.center(120,'-'))
+            yes_questions = [q for q in questions if q.user_answer == True]
+            for yes in yes_questions:
+                file.write(f'\nquestion: {yes.text}\npoints: {yes.points}\ncoment: {yes.user_coment}\n')
+
+            #no
+            file.write('\n')
+            file.write('"no" questions'.center(120,'-'))
+            no_questions = [q for q in questions if q.user_answer == False]
+            for no in no_questions:
+                file.write(f'\nquestion: {no.text}\npoints: {no.points}\ncoment: {no.user_coment}\n')
+
+            #unanswered
+            file.write('\n')
+            file.write('"/" questions'.center(120,'-'))
+            unanswered = [q for q in questions if q.user_answer == '/']
+            for none in unanswered:
+                file.write(f'\nquestion: {none.text}\npoints: {none.points}\ncoment: {none.user_coment}\n')
+# OUTPUT ↑

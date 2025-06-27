@@ -19,7 +19,7 @@ class Question:
         questions = []
         global_coment = False
 
-        for match in re.finditer(r'-*>(?P<question>[^;]*);(?P<answer>\([ra]:\s*(?P<a>[sny]),?\s*(?:c:(?P<c>[^;]*))?\);)?|(?P<comand>c\/o(?:n|ff))', lines, re.IGNORECASE):
+        for match in re.finditer(r'-*>(?P<question>[^;]*);(?P<answer>\([ra]:\s*(?P<a>[sny/]),?\s*(?:c:(?P<c>[^;]*))?\);)?|(?P<comand>c\/o(?:n|ff))', lines, re.IGNORECASE):
             if question := match.group('question'): 
                 try:
                     new_question = cls.create_question(question,global_coment)
@@ -61,7 +61,7 @@ class Question:
         self.user_answer = answer
         if self.coment: 
             self.user_coment = coment.strip() if coment else input('Coment: ')
-        else: self.user_coment = '/'
+        else: self.user_coment = ''
 
 
 def validate_answer(current_question=0, answer=''):
