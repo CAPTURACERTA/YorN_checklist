@@ -113,7 +113,7 @@ c/on
 > pergunta sem comentário{n};
 ```
 ## Considerações finais
-É isso, eu acho. yorn_checklist foi meu primeiro projeto de verdade. Nele usei um monte de coisas que tenho aprendido até agora: `file I/O`, `regex`, `python POO`, `Git/GitHub`... Atualmente tenho 3/4 mêses de programação, mas, apesar de iniciante, sinto que consegui fazer algo desacente. O código teve várias versões que você pode explorar pelos commits ou pela conversa que tive com o gemini, dê uma olhada.
+É isso, eu acho. yorn_checklist foi meu primeiro projeto de verdade. Nele usei um monte de coisas que tenho aprendido até agora: `file I/O`, `regex`, `python POO`, `Git/GitHub`... Atualmente tenho 3/4 mêses de programação, mas, apesar de iniciante, sinto que consegui fazer algo desacente. O código teve várias versões que você pode explorar pelos commits ou pela conversa que tive com o gemini, dê uma olhada!
 
 -[Conversa em que o Gemini me auxilia](https://g.co/gemini/share/c3bdb15909d6)
 
