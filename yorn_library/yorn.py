@@ -18,6 +18,7 @@ def get_toanswer(lines):
 def get_yorn_answers(questions, feedback):
     current_question = 0
 
+    print(f'{'yorn'.center(120,'=')}')
     while current_question < len(questions):
         print(f'->{questions[current_question].text} (y/n)')
         while True:
