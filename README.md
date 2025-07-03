@@ -1,6 +1,19 @@
 # Yes or No Automatic Checklist
 yorn surgiu enquanto eu estava respondendo uma checklist manualmente para saber se estava pronto para entrar em um relacionamento. Pensei: "eu bem que podia automatizar isso", então nasceu meu primeiro projeto.
 
+#### Clone o repositório.
+```bash
+# clone o repositório
+git clone https://github.com/CAPTURACERTA/YorN_checklist.git
+
+# acesse o diretório do projeto
+cd YorN_checklist
+```
+#
+---
+
+# Documentação
+
 ### O que é yorn?
 De forma simples: yorn é um leitor de arquivo txt.
 
