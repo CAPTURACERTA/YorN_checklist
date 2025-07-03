@@ -51,17 +51,17 @@ No 2° parágrafo, o escritor faz algumas perguntas para saber se Bob seria capa
 ### -perguntas
 Isso que você acabou de ler é a forma como o programa interpreta perguntas. Vamos dismiuçá-las:
 
-`->` A seta demarca o começo de uma pergunta. Ela pode ser apenas um ">", ou vários "-" seguido de um ">". `Regex: "-*>"`.
+- `->` A seta demarca o começo de uma pergunta. Ela pode ser apenas um ">", ou vários "-" seguido de um ">". `Regex: "-*>"`.
 
-`texto` Após a seta, entra o texto da pergunta. "---->Consegue diminuir os custos?"
+- `texto` Após a seta, entra o texto da pergunta. "---->Consegue diminuir os custos?"
 
-`{pontos,comentário?}` Após o texto, entra os parâmetros, quantos pontos a pergunta vale e se ela admite comentário. Os parâmetros são opcionais, se você não os providênciar eles terão seus valores padrões: "{1,n}", que significa um ponto e sem comentário. Você pode colocar apenas um parâmetro, "{s}" ou "{2}", mas, caso ponha os dois, o ponto deve vir primeiro. Além disso, os pontos só vão até nove. Caso ponha um valor >= 10, desrespeitará a sintáxe da regex e os valores padrões entrarão. O mesmo para o comentário, só pode "s", "y", "n" ou "/". `Regex: "\{-?\d?,?[ysn/]?\}"`
+- `{pontos,comentário?}` Após o texto, entra os parâmetros, quantos pontos a pergunta vale e se ela admite comentário. Os parâmetros são opcionais, se você não os providênciar eles terão seus valores padrões: "{1,n}", que significa um ponto e sem comentário. Você pode colocar apenas um parâmetro, "{s}" ou "{2}", mas, caso ponha os dois, o ponto deve vir primeiro. Além disso, os pontos só vão até nove. Caso ponha um valor >= 10, desrespeitará a sintáxe da regex e os valores padrões entrarão. O mesmo para o comentário, só pode "s", "y", "n" ou "/". `Regex: "\{-?\d?,?[ysn/]?\}"`
 
 ">Consegue diminuir os custos?         
 {3,y}"
 >Observe que usei "y", "yes", ao invés de "s", "sim". Pode ser qualquer um dos dois. Além disso, observe que a sintáxe é flexível, esse \n não afetaria a pergunta. Por fim, "/" é o mesmo que "n", mas é uma forma visual de dizer "não sei".
 
-`;` Por fim, para finalizar a pergunta, o famoso ";".
+- `;` Por fim, para finalizar a pergunta, o famoso ";".
 
 Exemplo de perguntas:
 ```
@@ -90,15 +90,15 @@ mode: toanswer
 #### mode: tofeedback
 "tofeedback" é a mesma coisa que o yorn, mas você introduz as respostas diretamente no arquivo ao invés de dá-las via terminal. A sintáxe nova que você viu é dele, `(a:/ c:/);`, vamos dismiuçá-la:
 
-`()` Os argumentos devem estar entre parênteses e eles devem estar colados com o ";" final da pergunta. Essa parte não é muito flexível... ">pergunta; ()", esse espaço entre a pergunta e a resposta invalidaria a resposta.
+- `()` Os argumentos devem estar entre parênteses e eles devem estar colados com o ";" final da pergunta. Essa parte não é muito flexível... ">pergunta; ()", esse espaço entre a pergunta e a resposta invalidaria a resposta.
 
-`a:` A resposta (pode ser "a:", "answer", ou "r:", "resposta") é um argumento obrigatório e espera "s", "y", "n" ou "/". Se não respondido, a pergunta será ignorada. 
+- `a:` A resposta (pode ser "a:", "answer", ou "r:", "resposta") é um argumento obrigatório e espera "s", "y", "n" ou "/". Se não respondido, a pergunta será ignorada. 
 "(a:s)"
 
-`c:` O comentário é um argumento opcional. Observe que se a pergunta tiver "{n}" como parâmetro, mesmo que tenha posto comentário, ele não aparecerá.
+- `c:` O comentário é um argumento opcional. Observe que se a pergunta tiver "{n}" como parâmetro, mesmo que tenha posto comentário, ele não aparecerá.
 "(a:n c:)"
 
-`;` Novamente o ";" para finalizar. Note que a pergunta e a resposta têm ";" individuais.
+- `;` Novamente o ";" para finalizar. Note que a pergunta e a resposta têm ";" individuais.
 
 exemplos de respostas:
 ```
@@ -110,15 +110,18 @@ c: bla bla);   válido
 >...;(r:s)     inválido(sem o ";")
 ```
 >Um adendo importante é que o "yorn" ignora o bloco de resposta `(r:/ c:/);` e o "tofeedback" não pega perguntas não respondidas, então o "toanswer" pode ser usado para ambos os modos.
+
+Regex: `(\([ra]:\s*([sny\/]),?\s*(c:[^;]*)?\);)?`
 ### -porcentagem e pontos
 Nos exemplos acima você deve ter visto as variáveis `percentage, total_points` e `user_points` nos arquivos gerados para feedback. Essa é a forma como o programa valida sucesso ou falha. No caso, ele soma todos os pontos positivos das perguntas e vê se o tanto de pontos que o usuário fez atende à porcentagem requirida. Isso significa que, colocar perguntas com pontos negativos inverte a lógica do sim/não, fazendo com que o usuário perca pontos ao responder sim, e que é possível manipular a tolerância de erro do programa.
 ### feedback: 60
 Como visto no arquivo gerado pelo "toanswer", a variável usada para controlar a porcentagem é "feedback:", cujo valor padrão é 60. Da mesma forma como o "mode", basta pô-la no topo do arquivo.
 >A verdade é que você pode colocar onde quiser no arquivo, mas é melhor seguir um padrão. Além de que, se puser mais de um, tanto do "mode", quanto do "feedback", o programa pegará apenas a primeira ocorrência.
-### -comandos
-`/back` Caso você esteja respondendo uma pergunta no modo "yorn" e dê uma resposta errada, pode usar o comando `/back`, no terminal, para retornar uma pergunta.
 
-`c/on c/off` E, para finalizar, caso você queira configrar várias perguntas para permitir ou não comentário, basta usar os comandos `c/on ou c/off` no arquivo e todos as perguntas, sem parâmetro de comentário definido, logo abaixo do comando obedecerão.
+### -comandos
+- `/back` Caso você esteja respondendo uma pergunta no modo "yorn" e dê uma resposta errada, pode usar o comando `/back`, no terminal, para retornar uma pergunta.
+
+- `c/on c/off` E, para finalizar, caso você queira configrar várias perguntas para permitir ou não comentário, basta usar os comandos `c/on ou c/off` no arquivo e todos as perguntas, sem parâmetro de comentário definido, logo abaixo do comando obedecerão.
 >A hierarquia do comentário é: parâmetro 1°, comando 2°. Isso significa que, se você definir `c/on` no topo do arquivo, o padrão será esse até que você defina outro...
 
 Ex:
@@ -131,7 +134,7 @@ c/on
 ```
 
 ## Considerações finais
-É isso, eu acho. yorn_checklist foi meu primeiro projeto de verdade. Nele usei um monte de coisas que tenho aprendido até agora: `file I/O`, `regex`, `python POO`, `Git/GitHub`... Atualmente tenho 3/4 mêses de programação, mas, apesar de iniciante, sinto que consegui fazer algo desacente. O código teve várias versões que você pode explorar pelos commits ou pela conversa que tive com o gemini, dê uma olhada!
+É isso, eu acho. yorn_checklist foi meu primeiro projeto de verdade. Nele usei um monte de coisas que tenho aprendido até agora: `file I/O`, `regex`, `python POO`, `Git/GitHub`... Atualmente tenho 3/4 mêses de programação, mas, apesar de iniciante, sinto que consegui fazer algo descente. O código teve várias versões que você pode explorar pelos commits ou pela conversa que tive com o gemini, dê uma olhada!
 
 -[Conversa em que o Gemini me auxilia](https://g.co/gemini/share/c3bdb15909d6)
 
